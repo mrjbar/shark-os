@@ -7,33 +7,34 @@
  *
  * @author Owner
  */
-public class Process implements Runnable , Comparable<Process>{
-    
+public class Process implements Comparable<Process>
+{
+	int id;
+	int priority;
+	float endTime;
+	float startTime;
     float burstTime;
-    float arrivalTime;
-    int priority;
-    float turnAroundTime;
     float waitingTime;
-    int id;
+    float arrivalTime;
+    float responseTime;
+    float turnAroundTime;
     float timeLeftInQuantum;
     float expectedFinishTime;
-    float endTime;
-    float responseTime;
-
-      @Override
-    public void run() {
-    }
-    public Process(float burstTime, float arrivalTime, int priority, float turnAroundTime, float waitingTime, int id, float timeLeftInQuantum, float expectedFinishTime, float endTime, float responseTime) {
+	
+    public Process(int id, float burstTime, float arrivalTime, int priority) 
+    {
         this.burstTime = burstTime;
         this.arrivalTime = arrivalTime;
         this.priority = priority;
-        this.turnAroundTime = turnAroundTime;
-        this.waitingTime = waitingTime;
+        this.turnAroundTime = 0;
+        this.waitingTime = 0;
         this.id = id;
-        this.timeLeftInQuantum = timeLeftInQuantum;
-        this.expectedFinishTime = expectedFinishTime;
-        this.endTime = endTime;
-        this.responseTime = responseTime;    }
+        this.timeLeftInQuantum = 0;
+        this.expectedFinishTime = 0;
+        this.endTime = 0;
+        this.responseTime = 0;    
+        this.startTime = 0;
+    }
 
     public float getResponseTime() {
         return responseTime;
@@ -118,6 +119,14 @@ public class Process implements Runnable , Comparable<Process>{
     public void setEndTime(float endTime) {
         this.endTime = endTime;
     }
+    
+    public float getStartTime() {
+		return startTime;
+	}
+    
+	public void setStartTime(float startTime) {
+		this.startTime = startTime;
+	}
 
 	public int compareTo(Process o) {
 		float comparedFrom = o.getArrivalTime();
@@ -128,9 +137,5 @@ public class Process implements Runnable , Comparable<Process>{
 		} else {
 			return -1;
 		}
-	}
-
-  
-    
+	} 
 }
-
