@@ -1,3 +1,4 @@
+import java.math.BigDecimal;
 import java.util.*;
 
 public class Scheduler 
@@ -22,8 +23,14 @@ public class Scheduler
 		{
 			clock++;
 		}
-		p.setEndTime(p.getStartTime() + p.burstTime);
+		p.setEndTime(round(p.getStartTime() + p.getBurstTime(), 1));
 	}
+	
+    public static float round(float d, int decimalPlace) {
+        BigDecimal bd = new BigDecimal(Float.toString(d));
+        bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
+        return bd.floatValue();
+    }
 	
 	public static void fcfs(ArrayList<Process> queue)
 	{
@@ -44,10 +51,10 @@ public class Scheduler
 		    cpu(process);
 		    
 		    // Wait time
-			process.setWaitingTime(process.getStartTime() - process.getArrivalTime());
+			process.setWaitingTime(round(process.getStartTime() - process.getArrivalTime(), 1));
 			
 			// Turn around time
-			process.setTurnAroundTime(process.getEndTime() - process.getBurstTime());
+			process.setTurnAroundTime(round(process.getEndTime() - process.getArrivalTime(), 1));
 			
 			// Response time
 			process.setResponseTime(process.getTurnAroundTime());
