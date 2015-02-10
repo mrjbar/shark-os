@@ -22,7 +22,7 @@ public class Scheduler
 		{
 			clock++;
 		}
-		p.setEndTime(clock);
+		p.setEndTime(p.getStartTime() + p.burstTime);
 	}
 	
 	public static void fcfs(ArrayList<Process> queue)
