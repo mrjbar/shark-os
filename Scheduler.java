@@ -11,12 +11,12 @@ public class Scheduler
 		int expectedRunTime = (int)Math.ceil(p.getBurstTime());
 		if(p.getArrivalTime() - clock > 1)
 		{
-			p.setStartTime(p.getArrivalTime());
+			p.setStartTime((float)Math.ceil(p.getArrivalTime()));
 			clock = p.getArrivalTime();
 		}
 		else
 		{
-			p.setStartTime(clock);
+			p.setStartTime((float)Math.ceil(clock));
 		}
 		
 		for(int runTime = expectedRunTime; runTime>0; runTime--)
