@@ -29,8 +29,8 @@ public class Process implements Comparable<Process>
         this.turnAroundTime = 0;
         this.waitingTime = 0;
         this.id = id;
-        this.timeLeftInQuantum = 0;
-        this.expectedFinishTime = 0;
+        this.timeLeftInQuantum = burstTime;
+        this.expectedFinishTime = burstTime;
         this.endTime = 0;
         this.responseTime = 0;    
         this.startTime = 0;
