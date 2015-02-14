@@ -55,6 +55,11 @@ public class Scheduler
         return completedProcesses;
 	}
 	
+	/**
+	 * 
+	 * @param arrivalQueue - A queue or processes sorted by arrival time
+	 * @return - A queue of processes
+	 */
 	public static ArrayList<Process> roundRobin(ArrayList<Process> arrivalQueue)
 	{
 		// Return ArrayList with all completed processes up to 100 quantum
@@ -67,6 +72,9 @@ public class Scheduler
         Process idleProcess = null;
         Process currentProcess = arrivalQueue.remove(index);
         
+        // Run the round robin algorithm until both the round robin queue
+        // and the arrival queue are empty and there are no more processes
+        // to execute
         while(!roundRobinQueue.isEmpty() || !arrivalQueue.isEmpty())
         {
         	// Add one or more process to the round robin queue if the process 
@@ -84,6 +92,7 @@ public class Scheduler
         		currentProcess = arrivalQueue.remove(index);
         	}
         	
+        	// Check if processes are available and ready to run
         	if(!roundRobinQueue.isEmpty())
         	{
         		// Get the head process in the round robin queue
@@ -106,10 +115,11 @@ public class Scheduler
             		roundRobinQueue.add(roundRobinProcess);
             	else
             		roundRobinQueue.remove(roundRobinProcess);
-            		System.out.println("Quantum = " + quantum + "\t\tP" + roundRobinProcess.getId() + "\t\tArrival Time " + roundRobinProcess.getArrivalTime()  + "\t\tStart Time " + roundRobinProcess.getStartTime() + "\t\tBurst Time " + roundRobinProcess.getBurstTime() + "\t\tRemaining Quantum " + roundRobinProcess.getExpectedFinishTime());   
+            	System.out.println("Quantum = " + quantum + "\t\tP" + roundRobinProcess.getId() + "\t\tArrival Time " + roundRobinProcess.getArrivalTime()  + "\t\tStart Time " + roundRobinProcess.getStartTime() + "\t\tBurst Time " + roundRobinProcess.getBurstTime() + "\t\tRemaining Quantum " + roundRobinProcess.getExpectedFinishTime());   
         	}
         	else
         	{
+        		// Add an idle process to the quantumQueue if no processes are available
         		quantumQueue.add(idleProcess);  
         		System.out.println("Quantum = " + quantum + "\tIDLE");
         	}
