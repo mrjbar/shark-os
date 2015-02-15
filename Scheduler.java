@@ -101,7 +101,17 @@ public class Scheduler
             	// If this is the first execution of this program then 
             	// set the start time to the time of the current quantum
             	if(roundRobinProcess.getStartTime() == 0)
+            	{
+            		// Set the start time to the current quantum
             		roundRobinProcess.setStartTime(quantum);
+            		
+            		// Calculate and set the response time by getting the difference
+            		// between the time the process started and the time it arrived
+            		roundRobinProcess.setResponseTime(roundRobinProcess.getStartTime() - roundRobinProcess.getArrivalTime());
+            		            		
+            		// Calculate and set the wait time
+            		
+            	}
             	
             	// Deduct a quantum from the current running process
             	roundRobinProcess.setExpectedFinishTime(roundRobinProcess.getExpectedFinishTime() - 1);
@@ -114,8 +124,13 @@ public class Scheduler
             	if(roundRobinProcess.getExpectedFinishTime() > 0)
             		roundRobinQueue.add(roundRobinProcess);
             	else
+            	{
+            		// Calculate and set the Turn Around Time by getting the difference between the Finish Time
+            		// and the Arrival Time.
+            		roundRobinProcess.setTurnAroundTime(round(quantum - roundRobinProcess.getArrivalTime(), 1));
             		roundRobinQueue.remove(roundRobinProcess);
-            	System.out.println("Quantum = " + quantum + "\t\tP" + roundRobinProcess.getId() + "\t\tArrival Time " + roundRobinProcess.getArrivalTime()  + "\t\tStart Time " + roundRobinProcess.getStartTime() + "\t\tBurst Time " + roundRobinProcess.getBurstTime() + "\t\tRemaining Quantum " + roundRobinProcess.getExpectedFinishTime());   
+            	}
+            	System.out.println("Quantum = " + quantum + "\t\tP" + roundRobinProcess.getId() + "\t\tArrival Time " + roundRobinProcess.getArrivalTime()  + "\t\tStart Time " + roundRobinProcess.getStartTime() + "\t\tBurst Time " + roundRobinProcess.getBurstTime() + "\t\tRemaining Quantum " + roundRobinProcess.getExpectedFinishTime() + "\t\tTurn Around Time " + roundRobinProcess.getTurnAroundTime());   
         	}
         	else
         	{
@@ -126,6 +141,8 @@ public class Scheduler
         	
         	// Increase quantum to keep track of time line
         	quantum++;
+        	
+        	//if(quantum > 99) arrivalQueue.removeAll(arrivalQueue);
         }
         
 		return quantumQueue;
