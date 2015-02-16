@@ -122,7 +122,7 @@ public class Scheduler
             		
             	
             	// Deduct a quantum from the current running process
-            	roundRobinProcess.setExpectedFinishTime(roundRobinProcess.getExpectedFinishTime() - 1);
+            	roundRobinProcess.setExpectedFinishTime(round(roundRobinProcess.getExpectedFinishTime() - 1, 1));
             	roundRobinProcess.setLastQuantumRan(quantum);
             	
             	// Add the process to the quantum queue
