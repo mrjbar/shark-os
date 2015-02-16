@@ -110,11 +110,20 @@ public class Scheduler
             		roundRobinProcess.setResponseTime(roundRobinProcess.getStartTime() - roundRobinProcess.getArrivalTime());
             		            		
             		// Calculate and set the wait time
+            		roundRobinProcess.setWaitingTime(quantum - roundRobinProcess.getArrivalTime());
             		
             	}
+            	else
+            	{
+            		// Calculate and set the wait time
+            		float waitTime = quantum - roundRobinProcess.getLastQuantumRan();
+            		roundRobinProcess.setWaitingTime(roundRobinProcess.getWaitingTime() + waitTime);
+            	}
+            		
             	
             	// Deduct a quantum from the current running process
             	roundRobinProcess.setExpectedFinishTime(roundRobinProcess.getExpectedFinishTime() - 1);
+            	roundRobinProcess.setLastQuantumRan(quantum);
             	
             	// Add the process to the quantum queue
         		quantumQueue.add(roundRobinProcess);
@@ -130,7 +139,7 @@ public class Scheduler
             		roundRobinProcess.setTurnAroundTime(round(quantum - roundRobinProcess.getArrivalTime(), 1));
             		roundRobinQueue.remove(roundRobinProcess);
             	}
-            	System.out.println("Quantum = " + quantum + "\t\tP" + roundRobinProcess.getId() + "\t\tArrival Time " + roundRobinProcess.getArrivalTime()  + "\t\tStart Time " + roundRobinProcess.getStartTime() + "\t\tBurst Time " + roundRobinProcess.getBurstTime() + "\t\tRemaining Quantum " + roundRobinProcess.getExpectedFinishTime() + "\t\tTurn Around Time " + roundRobinProcess.getTurnAroundTime());   
+            	System.out.println("Quantum = " + quantum + "\t\tP" + roundRobinProcess.getId() + "\t\tArrival Time " + roundRobinProcess.getArrivalTime()  + "\t\tStart Time " + roundRobinProcess.getStartTime() + "\t\tBurst Time " + roundRobinProcess.getBurstTime() + "\t\tRemaining Quantum " + roundRobinProcess.getExpectedFinishTime() + "\t\tTurn Around Time " + roundRobinProcess.getTurnAroundTime() + "\t\tWait Time " + roundRobinProcess.getWaitingTime());   
         	}
         	else
         	{
