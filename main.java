@@ -18,7 +18,7 @@ public class main {
      // Runnable r1 = new Process(burstTime, arrivalTime, priority, turnAroundTime, waitingTime, id, timeLeftInQuantum, expectedFinishTime, endTime);
         
         ArrayList<Process> processList = new ArrayList<>();        
-        for ( int i = 0 ; i < 10 ; i++) {
+        for ( int i = 0 ; i < 30 ; i++) {
            processList.add(new Process(i, expecRunTime(), ranArrival(), priority()));
         }
         
