@@ -55,6 +55,7 @@ public class Scheduler
         return completedProcesses;
 	}
 	
+	
 	/**
 	 * 
 	 * @param arrivalQueue - A queue or processes sorted by arrival time
@@ -83,6 +84,7 @@ public class Scheduler
         	{
         		// Add the current process to the round robin queue
         		roundRobinQueue.add(currentProcess);
+        		//System.out.println("Added to RR Queue: P"+currentProcess.getId());
         		
         		// Exit if no more processes are available in the arrival queue
         		if(arrivalQueue.isEmpty())
@@ -107,17 +109,19 @@ public class Scheduler
             		
             		// Calculate and set the response time by getting the difference
             		// between the time the process started and the time it arrived
-            		roundRobinProcess.setResponseTime(roundRobinProcess.getStartTime() - roundRobinProcess.getArrivalTime());
+            		roundRobinProcess.setResponseTime(round(roundRobinProcess.getStartTime() - roundRobinProcess.getArrivalTime(), 1));
             		            		
             		// Calculate and set the wait time
-            		roundRobinProcess.setWaitingTime(quantum - roundRobinProcess.getArrivalTime());
-            		
+            		roundRobinProcess.setWaitingTime(round(roundRobinProcess.getStartTime() - roundRobinProcess.getArrivalTime(), 1));	
             	}
             	else
             	{
             		// Calculate and set the wait time
-            		float waitTime = quantum - roundRobinProcess.getLastQuantumRan();
-            		roundRobinProcess.setWaitingTime(roundRobinProcess.getWaitingTime() + waitTime);
+            		if((quantum - roundRobinProcess.getLastQuantumRan()) > 1)
+            		{
+            			float waitTime = (quantum - roundRobinProcess.getLastQuantumRan()) - 1;
+            			roundRobinProcess.setWaitingTime(round(roundRobinProcess.getWaitingTime() + waitTime, 1));
+            		}
             	}
             		
             	
@@ -127,7 +131,9 @@ public class Scheduler
             	
             	// Add the process to the quantum queue
         		quantumQueue.add(roundRobinProcess);
-            	
+        		//System.out.println("Quantum: " + quantum + "\t\tP" + roundRobinProcess.getId() + "\tArrival Time: " + roundRobinProcess.getArrivalTime()  + "\tBurst Time: " + roundRobinProcess.getBurstTime() + "\t\tTurn Around Time: " + roundRobinProcess.getTurnAroundTime() + "\tWait Time: " + roundRobinProcess.getWaitingTime() + "\t\tResponse Time: " + roundRobinProcess.getResponseTime());   
+
+
             	// If the process is not finish add it to the end of the round robin queue
             	// otherwise remove it from the roundRobinQueue
             	if(roundRobinProcess.getExpectedFinishTime() > 0)
@@ -137,21 +143,19 @@ public class Scheduler
             		// Calculate and set the Turn Around Time by getting the difference between the Finish Time
             		// and the Arrival Time.
             		roundRobinProcess.setTurnAroundTime(round(quantum - roundRobinProcess.getArrivalTime(), 1));
+            		roundRobinProcess.setEndTime(roundRobinProcess.getArrivalTime() + roundRobinProcess.getStartTime());
             		roundRobinQueue.remove(roundRobinProcess);
             	}
-            	System.out.println("Quantum = " + quantum + "\t\tP" + roundRobinProcess.getId() + "\t\tArrival Time " + roundRobinProcess.getArrivalTime()  + "\t\tStart Time " + roundRobinProcess.getStartTime() + "\t\tBurst Time " + roundRobinProcess.getBurstTime() + "\t\tRemaining Quantum " + roundRobinProcess.getExpectedFinishTime() + "\t\tTurn Around Time " + roundRobinProcess.getTurnAroundTime() + "\t\tWait Time " + roundRobinProcess.getWaitingTime());   
         	}
         	else
         	{
         		// Add an idle process to the quantumQueue if no processes are available
         		quantumQueue.add(idleProcess);  
-        		System.out.println("Quantum = " + quantum + "\tIDLE");
+        		//System.out.println("Quantum: " + quantum  + "\t\tIdle");
         	}
         	
         	// Increase quantum to keep track of time line
         	quantum++;
-        	
-        	//if(quantum > 99) arrivalQueue.removeAll(arrivalQueue);
         }
         
 		return quantumQueue;
