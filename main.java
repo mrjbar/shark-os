@@ -15,10 +15,12 @@ public class main {
     public static int quanta = 100;
     public static void main(String[] args) {
         
+        SJF sjf = new SJF();
+		sjf.SJF();
 
         for(int j=0; j<5; j++)
         {
-        	float averageTurnAroundTime = 0; 
+            float averageTurnAroundTime = 0; 
             float averageWaitTime = 0; 
             float averageResponseTime = 0;
             int quantum = 0;
