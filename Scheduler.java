@@ -12,6 +12,8 @@ public class Scheduler
 	
 	public static ArrayList<Process> fcfs(ArrayList<Process> queue)
 	{
+		Collections.sort(queue);
+
 		// Return ArrayList with all completed processes up to 100 quantum
 		ArrayList<Process> completedProcesses = new ArrayList<Process>();
         
@@ -63,6 +65,7 @@ public class Scheduler
 	 */
 	public static ArrayList<Process> roundRobin(ArrayList<Process> arrivalQueue)
 	{
+		Collections.sort(arrivalQueue);
 		// Return ArrayList with all completed processes up to 100 quantum
 		ArrayList<Process> quantumQueue = new ArrayList<Process>();
 		LinkedList<Process> roundRobinQueue = new LinkedList<Process>();
@@ -102,6 +105,7 @@ public class Scheduler
             	
             	// If this is the first execution of this program then 
             	// set the start time to the time of the current quantum
+            	float startime = roundRobinProcess.getStartTime();
             	if(roundRobinProcess.getStartTime() == 0)
             	{
             		// Set the start time to the current quantum
@@ -110,7 +114,8 @@ public class Scheduler
             		// Calculate and set the response time by getting the difference
             		// between the time the process started and the time it arrived
             		roundRobinProcess.setResponseTime(round(roundRobinProcess.getStartTime() - roundRobinProcess.getArrivalTime(), 1));
-            		            		
+            		//System.out.println("P"+ roundRobinProcess.getId() + "Start Time = " + roundRobinProcess.getStartTime() + "Arrival Time = " + roundRobinProcess.getArrivalTime());            		
+            		
             		// Calculate and set the wait time
             		roundRobinProcess.setWaitingTime(round(roundRobinProcess.getStartTime() - roundRobinProcess.getArrivalTime(), 1));	
             	}
