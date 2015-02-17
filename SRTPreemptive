@@ -1,0 +1,217 @@
+import java.util.ArrayList;
+import java.util.Collections;
+
+
+public class SRTPreemptive {
+
+
+
+
+
+		
+		public static int[] Quanta = new int[2000];
+		public static int count=0, SizeQ =0, IdleL=0, p=0, stoppoint=0;
+		public static boolean end= false, Stop=false;
+		public static boolean SwitchPoint =true;
+		public static double aTurn=0.0,aWait=0.0, aRes=0.0,aTTurn=0.0,aTWait=0.0, aTRes=0.0;
+		public static void fcfs(ArrayList<Process> queue)
+		{
+			// Sort queue by arrival time
+			Collections.sort(queue);
+			Process temp;
+			
+			// Process queue
+	   //     System.out.println("Process id \t Arrival Time \t Start Time \t Finish Time \t Burst Time \t Turn Around Time \t Waiting Time \t Response Time");
+	   //     System.out.println("---------------------------------------------------------------------------------------------------------------------------------------");
+	    
+		//	for(int t=0; t<50; t++)
+			//{
+			//	System.out.println(t+"-"+queue.get(t).getId() + "\t"+queue.get(t).getArrivalTime() + "\t"+queue.get(t).getBurstTime()+ "\t"+queue.get(t).getPriorityt() );
+		//	}
+	        SizeQ = (int)Math.ceil(queue.get(0).getArrivalTime());	     
+	      //  System.out.println(SizeQ+"he");
+	        
+	        
+	        while (end== false)
+	        {
+	        	// running 		
+	        	
+	        	
+	        	
+	         	// this is to get the lenght of waiting list
+	        	if(Stop == false)
+	        	{
+	        	 for(int a=count; a< queue.size(); a++)
+	             {
+	             	if(queue.get(a).getArrivalTime() <= SizeQ)
+	     			{
+	             		IdleL = a; 
+	     			}
+
+	             }
+	        	}
+	        	 // this is to stop at 99 quanta
+
+				 if (SizeQ > 99)
+				 {
+					 Stop = true;
+					 // this method is to put unstarted 
+					 for(int t= count; t<=IdleL; t++)
+					 {
+						 for (int tt= count; tt< IdleL; tt++)
+						 {
+							 if(queue.get(tt).IsStarted()==false)
+							 {
+								 temp = queue.get(tt);
+		     				     queue.set(tt, queue.get(tt+1));
+		     					 queue.set(tt+1, temp);
+							 }
+						 }
+					 }
+					 
+					 
+					 // this is to get the stoppoint
+						for (int b =count; b<= IdleL; b++)
+			     		{	
+							if(queue.get(b).IsStarted()==false){
+								IdleL =b-1;
+								break;
+							}										
+	                    }
+
+				 }
+				 // end  if stop quanta 
+
+	        	
+	  // end   get the lenght of waiting list
+	        	 
+				  // sorting part 
+				 	p = count + 1;
+				 	if(SwitchPoint ==true)
+				 	{
+				 		p = count;
+				 	}
+		         	for (int b =p; b<= IdleL; b++)
+		     		{
+		     			for(int c= p; c<IdleL ;c++){		     				
+		     				if(queue.get(c).getBurstTime() > queue.get(c+1).getBurstTime())
+		     				{
+		     					//SizeW++;			
+		     						temp = queue.get(c);
+		     						queue.set(c, queue.get(c+1));
+		     						queue.set(c+1, temp);
+		     						///waitingP[SizeW]=b;	     				
+		     				//	System.out.println(waitingP[SizeW]);		     					
+		     				}	
+		     				}
+                  }
+		         	
+		// end sorting part
+       	  
+       	// Put the back to the end of the waiting list and sort base on remaining time
+		      if(SwitchPoint == false)
+		      {
+	         	for(int d= count; d<IdleL; d++)
+	         	{		
+		         	    if(queue.get(d).getBurstTime()< queue.get(d+1).getBurstTime())
+		         	    {
+		         	      break;
+		         	    }
+			         	if(queue.get(d).getBurstTime()>= queue.get(d+1).getBurstTime())
+			         	{
+    						temp = queue.get(d);
+    						queue.set(d, queue.get(d+1));
+    						queue.set(d+1, temp);
+			         	}
+
+	         	}
+        	
+		      }
+
+       // 	for (int b =count; b<= IdleL; b++)
+    	//	{					     				
+    	//			System.out.print(queue.get(b).getId()+"-");
+        //    }
+
+	        	
+	        	
+	        	  if(queue.get(count).getBurstTime()>0)
+			         {
+		        	 
+			         	Quanta[SizeQ]=queue.get(count).getId();
+			         	
+			         //	 System.out.print((SizeQ)+"P"+Quanta[SizeQ]+"\n");
+			         	 
+			         	 for(int add=count; add<=IdleL; add++)
+			         	 {
+			         		 queue.get(add).setAging(queue.get(add).getAging()+1);
+			         	 }
+			         	SizeQ++;
+			         	float tt = (float)(queue.get(count).getBurstTime()-1);
+			            queue.get(count).setBurstTime(tt);
+			            if(queue.get(count).IsStarted()==false && SizeQ<100)
+			            {
+			            	stoppoint++;
+			            	// set response time
+			            	queue.get(count).setResponseTime(SizeQ-queue.get(count).getArrivalTime());
+			            	queue.get(count).setWaitingTime(queue.get(count).getResponseTime());
+			            	// end set response time
+			            }
+			            queue.get(count).setIsStarted(true);
+			            SwitchPoint = false;
+			         }
+	        	  // end running
+	        	  if(queue.get(count).getBurstTime()<=0)
+	        	  {
+	        		  SwitchPoint = true;
+	        		  queue.get(count).setTurnAroundTime((float)(SizeQ -queue.get(count).getArrivalTime()));
+	        		  // set turnaroung time
+	        		// queue.get(count).setTurnAroundTime(turnAroundTime);
+	        		  count++;
+	        		//  System.out.println(count+"countT- P"+queue.get(count-1).getId());
+	        		  // do calculation here
+	        	//	  calculation(queue.get(count-1));
+	        		 if (count > stoppoint && Stop == true){
+	        			 end = true;
+	        			 
+	        		//	for (int aa=0; aa< queue.size(); aa++)
+	        		//	{
+	        		//		if(queue.get(aa).IsStarted()==true)
+	        		//		System.out.println(aa+"--"+queue.get(aa).getId()+"--"+queue.get(aa).getArrivalTime()+"--"+queue.get(aa).getBurstTime()+"--"+queue.get(aa).getPriorityt());
+	        		//	}
+	        		 }
+	        		  
+	        		
+	        	  }
+	        	
+	        	  
+
+
+			}
+	      System.out.println("ID " + "\t"+"ArrivalTime" + "\t"+ "BurstTime");  
+	    		for(int t=0; t<=count; t++)
+				{
+					System.out.println(t+"-"+queue.get(t).getId() + "\t\t"+queue.get(t).getArrivalTime() + "\t\t"+queue.get(t).getBurstTimeT() );
+				} 
+	      
+	        for(int cc=0; cc<=count;cc++)
+	        {
+	        	aTTurn += queue.get(cc).getTurnAroundTime();
+	        	aTWait += queue.get(cc).getWaitingTime();
+	        	aTRes += queue.get(cc).getResponseTime();
+	        }
+	        aTurn = aTTurn/count;
+        	aWait = aTWait/count;
+        	aRes = aTRes/count;
+        	
+        	
+        	System.out.println("Shortest remaining time Preemptive ");
+        	System.out.println("Av Turnaround: "+String.format( "%.2f", aTurn )+
+        			"  Waiting: " +String.format( "%.2f", aWait )  +
+        			"  Response:" + String.format( "%.2f", aRes ));
+
+	        
+		}
+		
+	
+	}
