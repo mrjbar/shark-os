@@ -1,0 +1,103 @@
+	import java.util.*;
+	
+public class RoundRobin {
+
+
+
+		
+		public static int[] Quanta = new int[2000];
+		public static int count=0, SizeQ =0, IdleL=0;
+		public static boolean end= false, Stop=false;
+
+		public static void fcfs(ArrayList<Process> queue)
+		{
+			// Sort queue by arrival time
+			Collections.sort(queue);
+			Process temp;
+			
+			// Process queue
+	   //     System.out.println("Process id \t Arrival Time \t Start Time \t Finish Time \t Burst Time \t Turn Around Time \t Waiting Time \t Response Time");
+	   //     System.out.println("---------------------------------------------------------------------------------------------------------------------------------------");
+	    
+			for(int t=0; t<50; t++)
+			{
+				System.out.println(t+"-"+queue.get(t).getId() + "\t"+queue.get(t).getArrivalTime() + "\t"+queue.get(t).getBurstTime() );
+			}
+	        SizeQ = (int)Math.ceil(queue.get(0).getArrivalTime());	     
+	      //  System.out.println(SizeQ+"he");
+	        
+	        
+	        while (end== false)
+	        {
+	        	// running 
+	        	//System.out.println(count+"count");
+	        	  if(queue.get(count).getBurstTime()>0)
+			         {
+			         	Quanta[SizeQ]=queue.get(count).getId();
+			         	 System.out.print(SizeQ+"P"+Quanta[SizeQ]+"\n");
+			         	SizeQ++;
+			         	float tt = (float)(queue.get(count).getBurstTime()-1);
+			            queue.get(count).setBurstTime(tt);
+			            queue.get(count).setIsStarted(true);
+			         }
+	        	  // end running
+	        	  if(queue.get(count).getBurstTime()<=0)
+	        	  {
+	        		  queue.get(count).setTurnAroundTime((float)(SizeQ -queue.get(count).getArrivalTime()));
+	        		  count++;
+	        		  System.out.println(count+"countT");
+	        		  // do calculation here
+	        	//	  calculation(queue.get(count-1));
+	        		 
+	        		  if(queue.get(count).IsStarted()==false && Stop == true) end = true;
+	        		  
+	        		
+	        	  }
+	        	// this is to get the lenght of waiting list
+				        	 for(int a=count; a< queue.size(); a++)
+				             {
+				             	if(queue.get(a).getArrivalTime() <= SizeQ)
+				     			{
+				             		IdleL = a; 
+				             		//System.out.println("L"+IdleL);
+				     			}
+				             }
+				        	 
+				        	 
+							 if (SizeQ >100)
+							 {
+								 Stop = true;
+									for (int b =count; b<= IdleL; b++)
+						     		{	
+										if(queue.get(b).IsStarted()==false){
+											IdleL =b;
+										//	System.out.println(SizeQ+"end");
+										}										
+				                    }
+								//	System.out.println(SizeQ+"end");
+							 }
+				        	
+				  // end   get the lenght of waiting list
+				        	 
+				  // sorting part
+							 temp = queue.get(count);
+				         	for (int b =count; b< IdleL; b++)
+				     		{					     						     					
+				     			queue.set(b, queue.get(b+1));
+	                        }
+				         	queue.set(IdleL, temp);
+				         //	System.out.println(queue.get(IdleL).getId()+"S");
+				// end sorting part
+				         	
+
+			
+				         	for (int b =count; b<= IdleL; b++)
+				     		{					     				
+				     				System.out.print(queue.get(b).getId()+"-");
+	                        }
+		
+
+			//	System.out.println("System hang");
+			}
+		}
+	}
