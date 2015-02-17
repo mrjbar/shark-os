@@ -9,10 +9,10 @@
  */
 public class Process implements Comparable<Process>
 {
-	int id;
-	int priority;
-	float endTime;
-	float startTime;
+    int id;
+    int priority;
+    float endTime;
+    float startTime;
     float burstTime;
     float waitingTime;
     float arrivalTime;
@@ -20,6 +20,7 @@ public class Process implements Comparable<Process>
     float turnAroundTime;
     float timeLeftInQuantum;
     float expectedFinishTime;
+    float lastQuantumRan;
 	
     public Process(int id, float burstTime, float arrivalTime, int priority) 
     {
@@ -29,14 +30,23 @@ public class Process implements Comparable<Process>
         this.turnAroundTime = 0;
         this.waitingTime = 0;
         this.id = id;
-        this.timeLeftInQuantum = 0;
-        this.expectedFinishTime = 0;
+        this.timeLeftInQuantum = burstTime;
+        this.expectedFinishTime = burstTime;
         this.endTime = 0;
         this.responseTime = 0;    
         this.startTime = 0;
+        this.lastQuantumRan = 0;
     }
 
-    public float getResponseTime() {
+    public float getLastQuantumRan() {
+		return lastQuantumRan;
+	}
+
+	public void setLastQuantumRan(float lastQuantumRan) {
+		this.lastQuantumRan = lastQuantumRan;
+	}
+
+	public float getResponseTime() {
         return responseTime;
     }
 
