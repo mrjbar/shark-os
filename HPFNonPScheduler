@@ -1,0 +1,156 @@
+import java.math.BigDecimal;
+import java.util.*;
+
+public class HPFNonPScheduler 
+{
+	public static float clock = 0 ;
+	public static float endtime = 0;
+	public static int[] waitingP = new int[100];;
+	public static int SizeW=0,count=0,start=0;;
+	public static double aTurn=0.0,aWait=0.0, aRes=0.0,aTTurn=0.0,aTWait=0.0, aTRes=0.0;
+	
+
+	//public static int preff=0;
+	
+	public static void cpu(Process p)
+	{
+		p.setIsStarted(true);
+		// Set the start time for the process
+		int expectedRunTime = (int)Math.ceil(p.getBurstTime());
+		if(p.getArrivalTime() - clock > 1)
+		{
+			p.setStartTime((float)Math.ceil(p.getArrivalTime()));
+			clock = p.getArrivalTime();
+		}
+		else
+		{
+			p.setStartTime((float)Math.ceil(clock));
+		}
+		
+		for(int runTime = expectedRunTime; runTime>0; runTime--)
+		{
+			clock++;
+		}
+		
+	//	endtime = round(p.getStartTime() + p.getBurstTime(), 1);
+	//	p.setEndTime(endtime);
+		p.setEndTime(round(p.getStartTime() + p.getBurstTime(), 1));
+	}
+	
+    public static float round(float d, int decimalPlace) {
+        BigDecimal bd = new BigDecimal(Float.toString(d));
+        bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
+        return bd.floatValue();
+    }
+	
+	public static void fcfs(ArrayList<Process> queue)
+	{
+		// Sort queue by arrival time
+		Collections.sort(queue);
+		Process temp;
+		
+		// Process queue
+        System.out.println("Process id \t Arrival Time \t Start Time \t Finish Time \t Burst Time \t Turn Around Time \t Waiting Time \t Response Time");
+        System.out.println("---------------------------------------------------------------------------------------------------------------------------------------");
+      
+        	
+    
+			
+		
+		// get the right process
+		for (int a =0; a< queue.size(); a++)
+		{
+			if(clock == 0)
+			{
+			//	endtime =  queue.get(a).getArrivalTime();
+				clock = queue.get(a).getArrivalTime();
+			}
+			
+	//	/*
+			SizeW=0;
+			for (int b =a; b< queue.size(); b++)
+			{			
+				if(queue.get(b).getArrivalTime() <= clock)
+				{
+					if(queue.get(a).getPriority() > queue.get(b).getPriority())
+					{
+						SizeW++;
+						
+						temp = queue.get(a);
+						queue.set(a, queue.get(b));
+						queue.set(b, temp);
+						waitingP[SizeW]=b;
+					//	System.out.println(waitingP[SizeW]);
+						
+					}
+				}
+			}
+	
+			for(int c=0; c<SizeW; c++)
+			{
+				int tempA =0;
+				tempA =(int)(Math.ceil(queue.get(a).getBurstTime()));
+				tempA += queue.get(waitingP[c]).getAging();	
+				int add = tempA/5;
+				if(add >=1)
+				{
+					//System.out.println(queue.get(c).getPriority()+add);
+					add -=queue.get(waitingP[c]).getPriority();
+					if(queue.get(waitingP[c]).getPriority()<=1)
+						add=1;
+					queue.get(waitingP[c]).setPriority(add);
+					//System.out.println("he" +queue.get(c).getPriority());
+					tempA -= add*5;
+				}
+				queue.get(waitingP[c]).setAging(tempA);
+			}
+			//	*/
+			if(a>0)start =a-1;
+			if(queue.get(start).getEndTime()<100)
+			{
+			cpu(queue.get(a));
+	
+			  // Wait time
+			queue.get(a).setWaitingTime(round(queue.get(a).getStartTime() - queue.get(a).getArrivalTime(), 1));
+			
+			// Turn around time
+			queue.get(a).setTurnAroundTime(round(queue.get(a).getEndTime() - queue.get(a).getArrivalTime(), 1));
+			
+			// Response time
+			queue.get(a).setResponseTime(queue.get(a).getTurnAroundTime());
+		//	if(queue.get(a).getEndTime()<100){
+				System.out.println(queue.get(a).getId() + "\t\t " + 
+						queue.get(a).getArrivalTime() +"  "+ queue.get(a).getPriorityt()+ "-"+queue.get(a).getPriority()+ "\t\t" + queue.get(a).getStartTime()
+						+ "\t\t "+ queue.get(a).getEndTime() + "\t\t " + queue.get(a).getBurstTime()
+						+ "\t\t "+ queue.get(a).getTurnAroundTime() + "\t\t\t "
+						+ queue.get(a).getWaitingTime() + "\t\t " + queue.get(a).getResponseTime());	
+			//}
+			}else{
+				a=queue.size();
+			}
+		}
+		
+		
+		 for(int cc=0; cc<queue.size();cc++)
+	        {
+			 	if (queue.get(cc).IsStarted()==true) count++;
+	        }
+		 for(int cc=0; cc<=count;cc++)
+	        {
+	        	aTTurn += queue.get(cc).getTurnAroundTime();
+	        	aTWait += queue.get(cc).getWaitingTime();
+	        	aTRes += queue.get(cc).getResponseTime();
+	        }
+	        aTurn = aTTurn/count;
+     	aWait = aTWait/count;
+     	aRes = aTRes/count;
+     	
+     	
+     	System.out.println("High Priority First Preemptive with extra credit");
+     	System.out.println("Av Turnaround: "+String.format( "%.2f", aTurn )+
+     			"  Waiting: " +String.format( "%.2f", aWait )  +
+     			"  Response:" + String.format( "%.2f", aRes ));
+		
+		
+	}
+}
